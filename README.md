@@ -1,75 +1,61 @@
-# EE533 Lab 5: 3-Stage Pipeline Processor with RAM
+# EE533 Lab 5: Pipeline Architecture
 
-## Overview
-This project implements a 3-stage pipeline processor in Verilog with instruction memory (IMEM), data memory (DMEM), and a register file. The processor fetches instructions, decodes operands, and executes memory/write-back operations in a pipelined fashion.
+A Verilog implementation of a CPU pipeline without RAM, featuring instruction memory, data memory, and register file components.
 
-## Architecture
+## Project Structure
 
-### Pipeline Stages
-1. **Fetch (IF)**: Fetch instruction from instruction memory using program counter
-2. **Decode (ID)**: Decode instruction and read operands from register file
-3. **Memory/Write-Back (MEM/WB)**: Access data memory and write results back to register file
+### Core Modules
 
-### Key Components
-- **Program Counter (PC)**: 9-bit counter that increments each cycle
-- **Instruction Memory (IMEM)**: 512-entry × 32-bit memory storing instructions
-- **Data Memory (DMEM)**: 256-entry × 64-bit memory for data storage and retrieval
-- **Register File**: 64 × 64-bit registers for operand storage
+- **pipeline_no_ram.v** - Main pipeline processor module implementing the core execution pipeline
+- **Reg_File.v** - Register file implementation for CPU registers
+- **imem.v** - Instruction memory (ROM) for storing and retrieving instructions
+- **dmem.v** - Data memory (RAM) for load/store operations
+
+### Testbenches
+- **tb_latest.v** - Additional testbench implementation
+
+## Getting Started
+
+### Prerequisites
+
+- Verilog compiler (e.g., Icarus Verilog, ModelSim, or similar)
+- Simulation environment
+
+### Running Simulations
+
+To simulate the pipeline:
+
+```bash
+# Using Icarus Verilog (example)
+iverilog -o sim pipeline_no_ram.v Reg_File.v imem.v dmem.v pipeline_no_ram_tb.v
+vvp sim
+```
+
+## Architecture Overview
+
+This project implements a pipelined CPU architecture with the following components:
+
+- **Instruction Memory**: Stores instruction code
+- **Register File**: Manages CPU registers
+- **Data Memory**: Handles data storage and retrieval
+- **Pipeline Logic**: Implements instruction fetch, decode, execute, and write-back stages
 
 ## File Descriptions
 
 | File | Purpose |
 |------|---------|
-| [pipeline_with_ram.v](pipeline_with_ram.v) | Main processor module implementing the 3-stage pipeline |
-| [pipeline_with_ram_tb.v](pipeline_with_ram_tb.v) | Testbench for simulating and monitoring processor execution |
-| [imem.v](imem.v) | Instruction memory (ROM), 512 × 32-bit |
-| [dmem.v](dmem.v) | Data memory (RAM), 256 × 64-bit |
-| [Reg_File.v](Reg_File.v) | Register file with 64 × 64-bit registers |
-| [im.txt](im.txt) | Initial instruction memory contents (32-bit hex values) |
-| [dm.txt](dm.txt) | Initial data memory contents (64-bit hex values) |
+| pipeline_no_ram.v | Main pipeline core |
+| Reg_File.v | Register file  |
+| imem.v | Instruction ROM |
+| dmem.v | Data RAM |
+| tb_latest.v | Test harness |
 
-## Instruction Format
+## Notes
 
-Instruction is 32 bits wide with the following encoding:
+- This implementation does not use external RAM modules
+- All memory structures are implemented internally
+- Testbenches verify correct pipeline operation and data flow
 
-| Bits | Field | Description |
-|------|-------|-------------|
-| [31] | WMemEn | Write Memory Enable |
-| [30] | WRegEn | Write Register Enable |
-| [29:27] | Reg1Addr | Read Register 1 Address (0-7) |
-| [26:24] | Reg2Addr | Read Register 2 Address (0-7) |
-| [23:21] | WRegAddr | Write Register Address (0-7) |
-| [20:0] | Reserved | Unused |
+## Author
 
-## Pipeline Registers
-
-- **IF_ID_Instr**: Stores instruction fetched in IF stage
-- **ID_MEM_R1/R2**: Store operand data and control signals from ID stage
-- **MEM_WB_Data**: Stores memory read data and write-back control signals
-
-## How to Run
-
-### Pre-requisites
-- Verilog simulator (e.g., Vivado, ModelSim, Icarus Verilog)
-
-### Simulation Steps
-1. Compile all Verilog files
-2. Run testbench `pipeline_with_ram_tb.v`
-3. Observe pipeline execution with cycle-by-cycle register and memory values
-
-### Example Command (Icarus Verilog)
-```bash
-iverilog -o sim.vvp *.v
-vvp sim.vvp
-```
-
-## Memory Initialization
-
-- **im.txt**: Contains initial instruction memory values
-- **dm.txt**: Contains initial data memory values
-- Both files are loaded at simulation start by the respective memory modules
-
-## Sample Test Program
-The default im.txt contains a simple test program:
-- Instruction 0: Read register operations with write enable
-- Instructions 1-5: Sequential memory operations for testing pipeline behavior
+EE533 Lab 5
