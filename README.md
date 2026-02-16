@@ -18,7 +18,7 @@ A Verilog implementation of a CPU pipeline without RAM, featuring instruction me
 
 ### Prerequisites
 
-- Verilog compiler (e.g., Icarus Verilog, ModelSim, or similar)
+- Verilog compiler (e.g. ModelSim, or similar)
 - Simulation environment
 
 ### Running Simulations
@@ -26,9 +26,14 @@ A Verilog implementation of a CPU pipeline without RAM, featuring instruction me
 To simulate the pipeline:
 
 ```bash
-# Using Icarus Verilog (example)
-iverilog -o sim pipeline_no_ram.v Reg_File.v imem.v dmem.v pipeline_no_ram_tb.v
-vvp sim
+# Using Verilog in ModelSim(example)
+vsim -gui -novopt work.tb_pipeline_fixed
+add wave -position insertpoint sim:/tb_pipeline_fixed/uut/*
+run 200ns
+```
+```bash
+examine uut.dmem_inst.mem(4)
+# 64'h0000000000000004
 ```
 
 ## Architecture Overview
@@ -46,13 +51,12 @@ This project implements a pipelined CPU architecture with the following componen
 |------|---------|
 | pipeline_no_ram.v | Main pipeline core |
 | Reg_File.v | Register file  |
-| imem.v | Instruction ROM |
-| dmem.v | Data RAM |
+| imem.v | Instruction Memory |
+| dmem.v | Data Memory |
 | tb_latest.v | Test harness |
 
 ## Notes
 
-- This implementation does not use external RAM modules
 - All memory structures are implemented internally
 - Testbenches verify correct pipeline operation and data flow
 
